@@ -23,10 +23,15 @@ The data set og this ChatBot focusing on the theme of "Human Rights in the Digit
 ## Solution Architecture & Technologies Used
 The project uses a server-side RAG architecture. The technologies were chosen from the modern tools recommended in the bootcamp brief:
 • Generation Model: Google Gemini API (gemini-pro)
+
 • Embedding Model: Google Embedding API (models/embedding-001)
+
 • RAG Pipeline Framework: LangChain
+
 • Vector Database: FAISS (A fast, serverless, and local vector database)
+
 • Web Interface (Frontend): Streamlit
+
 • Security (API Key): python-dotenv
 
 
