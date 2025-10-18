@@ -2,14 +2,18 @@ ECHR Precedent Assistant
 This project is a RAG (Retrieval-Augmented Generation) based chatbot developed for the GAIH GenAI Bootcamp.
 The goal of this project is to move beyond a simple Q&A bot and to create a Legal Argument Assistant for law professionals and students.
 This assistant analyzes a legal argument provided by the user (e.g., a paragraph from a legal brief) and then utilizes a RAG architecture to retrieve and present relevant ECHR precedents that support or challenge that argument.
+
+
 About the Dataset
 The data set og this ChatBot focusing on the theme of "Human Rights in the Digital Age."
  5 strategic ECHR cases were selected. These cases center on the intersection of law and technology.The data is stored in case_summaries.txt and covers:
 • Article 8 (Digital Privacy): S. and Marper v. UK (On the state retention of biometric data—DNA, fingerprints—from individuals who were acquitted or had charges dropped).
 • Article 10 (Digital Freedom of Expression): Ahmet Yıldırım v. Turkey (On "collateral censorship" and the blocking of an entire platform—Google Sites—due to content on a single page).
-• [cite_start]Article 10 (Method of Gathering Information): Brambilla and Others v. Italy (On whether journalistic freedom protects the use of illegal methods—intercepting confidential police radio—to gather news) [cite: 29-45].
-• [cite_start]Article 10 (Chilling Effect): Kaboğlu and Oran v. Turkey (On how lengthy legal proceedings, even without a conviction, can create a "chilling effect" on freedom of expression) [cite: 225-243].
-• [cite_start]Article 9 (Balancing of Rights): Leyla Şahin v. Turkey (On the balance between public order, secularism, and the freedom of religion in an educational institution) [cite: 46-73].
+• Article 10 (Method of Gathering Information): Brambilla and Others v. Italy (On whether journalistic freedom protects the use of illegal methods—intercepting confidential police radio—to gather news).
+• Article 10 (Chilling Effect): Kaboğlu and Oran v. Turkey (On how lengthy legal proceedings, even without a conviction, can create a "chilling effect" on freedom of expression).
+• Article 9 (Balancing of Rights): Leyla Şahin v. Turkey (On the balance between public order, secularism, and the freedom of religion in an educational institution).
+
+
 Solution Architecture & Technologies Used
 The project uses a server-side RAG architecture. The technologies were chosen from the modern tools recommended in the bootcamp brief:
 • Generation Model: Google Gemini API (gemini-pro)
@@ -18,6 +22,8 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 • Vector Database: FAISS (A fast, serverless, and local vector database)
 • Web Interface (Frontend): Streamlit
 • Security (API Key): python-dotenv
+
+
 RAG Workflow
 1. Load: The emsal_kararlar.txt file is read.
 2. Chunking: The text is split into meaningful chunks using LangChain's RecursiveCharacterTextSplitter.
