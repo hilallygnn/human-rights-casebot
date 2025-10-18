@@ -6,11 +6,17 @@ This assistant analyzes a legal argument provided by the user (e.g., a paragraph
 
 ## About the Dataset
 The data set og this ChatBot focusing on the theme of "Human Rights in the Digital Age."
+
  5 strategic ECHR cases were selected. These cases center on the intersection of law and technology.The data is stored in case_summaries.txt and covers:
+
 • Article 8 (Digital Privacy): S. and Marper v. UK (On the state retention of biometric data—DNA, fingerprints—from individuals who were acquitted or had charges dropped).
+
 • Article 10 (Digital Freedom of Expression): Ahmet Yıldırım v. Turkey (On "collateral censorship" and the blocking of an entire platform—Google Sites—due to content on a single page).
+
 • Article 10 (Method of Gathering Information): Brambilla and Others v. Italy (On whether journalistic freedom protects the use of illegal methods—intercepting confidential police radio—to gather news).
+
 • Article 10 (Chilling Effect): Kaboğlu and Oran v. Turkey (On how lengthy legal proceedings, even without a conviction, can create a "chilling effect" on freedom of expression).
+
 • Article 9 (Balancing of Rights): Leyla Şahin v. Turkey (On the balance between public order, secularism, and the freedom of religion in an educational institution).
 
 
