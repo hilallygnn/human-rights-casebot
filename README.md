@@ -46,10 +46,15 @@ To demonstrate the Legal Argument Assistant's retrieval and analysis capabilitie
 
 ### RAG Workflow
 **1. Load:** The case_summaries.txt file is read.
+
 **2. Chunking:** The text is split into meaningful chunks using LangChain's RecursiveCharacterTextSplitter.
+
 **3. Embedding:** Each chunk is converted into a vector using Google's embedding model.
+
 **4. Storage:** These vectors are indexed and stored in a FAISS database.
+
 **5. Retrieval:** The user's "argument" is vectorized, and a similarity search is performed in FAISS to find the most relevant text chunks (case precedents).
+
 **6. Generation:** The retrieved context (the precedents) and the user's argument are sent to the Gemini API with a custom prompt. The model, acting as a "legal assistant," analyzes the argument and generates a response.
 
 ## Local Installation Guide
