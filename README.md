@@ -31,7 +31,7 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 
 
 ## RAG Workflow
-1. Load: The emsal_kararlar.txt file is read.
+1. Load: The case_summaries.txt file is read.
 2. Chunking: The text is split into meaningful chunks using LangChain's RecursiveCharacterTextSplitter.
 3. Embedding: Each chunk is converted into a vector using Google's embedding model.
 4. Storage: These vectors are indexed and stored in a FAISS database.
