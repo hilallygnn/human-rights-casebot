@@ -19,7 +19,7 @@ The dataset contains 5 strategic ECHR precedent cases, specifically chosen to hi
 
 ### Solution Architecture & Technologies Used
 The project uses a server-side RAG architecture. The technologies were chosen from the modern tools recommended in the bootcamp brief:
-• Generation Model: Google Gemini API (gemini-pro)
+• ** Generation Model:** Google Gemini API (gemini-pro)
 
 • Embedding Model: Google Embedding API (models/embedding-001)
 
@@ -30,6 +30,17 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 • Web Interface (Frontend): Streamlit
 
 • Security (API Key): python-dotenv
+
+### Example Arguments for Testing
+
+To demonstrate the Legal Argument Assistant's retrieval and analysis capabilities, try pasting arguments related to the specific precedents in the dataset:
+
+**Example 1 (Positive Obligation to Protect):**
+> "Following my public commentary on social media, I have received specific and credible death threats from an organized group. Despite reporting this with evidence to the police, the authorities have taken no effective steps to investigate the source of the threats or offer protection. Does the state have an obligation to actively protect my right to private life in this context?"
+
+**Example 2 (Internet Content Blocking):**
+> "A local court ordered the complete blocking of a global social media platform because of a single post by one user, arguing that only a blanket ban could prevent the content from spreading."
+
 
 
 ### RAG Workflow
