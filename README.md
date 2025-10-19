@@ -39,7 +39,7 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 4. Storage: These vectors are indexed and stored in a FAISS database.
 5. Retrieval: The user's "argument" is vectorized, and a similarity search is performed in FAISS to find the most relevant text chunks (case precedents).
 6. Generation: The retrieved context (the precedents) and the user's argument are sent to the Gemini API with a custom prompt. The model, acting as a "legal assistant," analyzes the argument and generates a response.
-### Local Installation Guide
+## Local Installation Guide
 
 Follow these steps to run the project on your local machine.
 
