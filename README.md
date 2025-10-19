@@ -1,4 +1,6 @@
-ECHR Precedent Assistant
+### Human Rights Case Bot ###
+## ECHR Precedent Assistant ##
+
 This project is a RAG (Retrieval-Augmented Generation) based chatbot developed for the GAIH GenAI Bootcamp.
 The goal of this project is to move beyond a simple Q&A bot and to create a Legal Argument Assistant for law professionals and students.
 This assistant analyzes a legal argument provided by the user (e.g., a paragraph from a legal brief) and then utilizes a RAG architecture to retrieve and present relevant ECHR precedents that support or challenge that argument.
