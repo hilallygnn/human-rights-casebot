@@ -3,21 +3,16 @@ This project is a RAG (Retrieval-Augmented Generation) based chatbot developed f
 The goal of this project is to move beyond a simple Q&A bot and to create a Legal Argument Assistant for law professionals and students.
 This assistant analyzes a legal argument provided by the user (e.g., a paragraph from a legal brief) and then utilizes a RAG architecture to retrieve and present relevant ECHR precedents that support or challenge that argument.
 
+## Dataset Information
 
-## About the Dataset
-The data set og this ChatBot focusing on the theme of "Human Rights in the Digital Age."
+The dataset contains 5 strategic ECHR precedent cases, specifically chosen to highlight the intersection of technology and law. These cases are contained within the `case_summaries.txt` file and cover the following key areas:
 
- 5 strategic ECHR cases were selected. These cases center on the intersection of law and technology.The data is stored in case_summaries.txt and covers:
+* **Article 8 (Biometric Data Retention):** *S. and Marper v. UK* (Indiscriminate retention of DNA and fingerprints of unconvicted persons).
+* **Article 10 (Wholesale Blocking):** *Ahmet Yıldırım v. Turkey* (Wholesale blocking of a hosting service, resulting in secondary censorship).
+* **Article 10 (Journalistic Ethics):** *Brambilla and Others v. Italy* (Conviction of journalists for intercepting confidential police communications to gain information).
+* **Article 8 (Protection from Hate Speech):** *Kaboğlu and Oran v. Turkey* (Failure of the State to protect academics from threats and hate speech following a public debate).
+* **Article 8 (Mass Surveillance):** *Roman Zakharov v. Russia* (Legality of the Russian system of secret and large-scale interception of mobile communications).
 
-• Article 8 (Digital Privacy): S. and Marper v. UK (On the state retention of biometric data—DNA, fingerprints—from individuals who were acquitted or had charges dropped).
-
-• Article 10 (Digital Freedom of Expression): Ahmet Yıldırım v. Turkey (On "collateral censorship" and the blocking of an entire platform—Google Sites—due to content on a single page).
-
-• Article 10 (Method of Gathering Information): Brambilla and Others v. Italy (On whether journalistic freedom protects the use of illegal methods—intercepting confidential police radio—to gather news).
-
-• Article 10 (Chilling Effect): Kaboğlu and Oran v. Turkey (On how lengthy legal proceedings, even without a conviction, can create a "chilling effect" on freedom of expression).
-
-• Article 9 (Balancing of Rights): Leyla Şahin v. Turkey (On the balance between public order, secularism, and the freedom of religion in an educational institution).
 
 
 ## Solution Architecture & Technologies Used
@@ -48,8 +43,8 @@ Follow these steps to run the project on your local machine.
 
 ### 1) Clone the Repository
 ```bash
-git clone https://github.com/hilallygnn/echr-precedent-assistant.git
-cd echr-precedent-assistant
+git clone https://github.com/hilallygnn/human-rights-casebot.git
+cd human-rights-casebot
 ```
 ### 2) Create and Activate a Virtual Environment
 ```bash
