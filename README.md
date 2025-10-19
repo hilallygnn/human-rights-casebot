@@ -1,11 +1,11 @@
-### Human Rights Case Bot ###
-## ECHR Precedent Assistant ##
+## Human Rights Case Bot ##
+### ECHR Precedent Assistant ###
 
 This project is a RAG (Retrieval-Augmented Generation) based chatbot developed for the GAIH GenAI Bootcamp.
 The goal of this project is to move beyond a simple Q&A bot and to create a Legal Argument Assistant for law professionals and students.
 This assistant analyzes a legal argument provided by the user (e.g., a paragraph from a legal brief) and then utilizes a RAG architecture to retrieve and present relevant ECHR precedents that support or challenge that argument.
 
-## Dataset Information
+### Dataset Information
 
 The dataset contains 5 strategic ECHR precedent cases, specifically chosen to highlight the intersection of technology and law. These cases are contained within the `case_summaries.txt` file and cover the following key areas:
 
@@ -17,7 +17,7 @@ The dataset contains 5 strategic ECHR precedent cases, specifically chosen to hi
 
 
 
-## Solution Architecture & Technologies Used
+### Solution Architecture & Technologies Used
 The project uses a server-side RAG architecture. The technologies were chosen from the modern tools recommended in the bootcamp brief:
 • Generation Model: Google Gemini API (gemini-pro)
 
@@ -32,14 +32,14 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 • Security (API Key): python-dotenv
 
 
-## RAG Workflow
+### RAG Workflow
 1. Load: The case_summaries.txt file is read.
 2. Chunking: The text is split into meaningful chunks using LangChain's RecursiveCharacterTextSplitter.
 3. Embedding: Each chunk is converted into a vector using Google's embedding model.
 4. Storage: These vectors are indexed and stored in a FAISS database.
 5. Retrieval: The user's "argument" is vectorized, and a similarity search is performed in FAISS to find the most relevant text chunks (case precedents).
 6. Generation: The retrieved context (the precedents) and the user's argument are sent to the Gemini API with a custom prompt. The model, acting as a "legal assistant," analyzes the argument and generates a response.
-## Local Installation Guide
+### Local Installation Guide
 
 Follow these steps to run the project on your local machine.
 
