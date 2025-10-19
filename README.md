@@ -36,10 +36,10 @@ The project uses a server-side RAG architecture. The technologies were chosen fr
 
 To demonstrate the Legal Argument Assistant's retrieval and analysis capabilities, try pasting arguments related to the specific precedents in the dataset:
 
-**Example 1 (Positive Obligation to Protect):**
+**Example 1:**
 > "Following my public commentary on social media, I have received specific and credible death threats from an organized group. Despite reporting this with evidence to the police, the authorities have taken no effective steps to investigate the source of the threats or offer protection. Does the state have an obligation to actively protect my right to private life in this context?"
 
-**Example 2 (Internet Content Blocking):**
+**Example 2:**
 > "A local court ordered the complete blocking of a global social media platform because of a single post by one user, arguing that only a blanket ban could prevent the content from spreading."
 
 
