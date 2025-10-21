@@ -1,6 +1,10 @@
+streamlit
+google-generativeai
 langchain
-chromadb
-openai
-flask
+langchain-core
+langchain-community
+langchain-text-splitters
+faiss-cpu
 python-dotenv
-requests
+sentence-transformers
+langchain-google-genai 
