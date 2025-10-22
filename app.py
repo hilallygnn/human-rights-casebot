@@ -38,7 +38,7 @@ def setup_rag_pipeline():
     texts = text_splitter.split_text(raw_text)
 
     # 2.3 Embedding (QUOTA BYPASS: Local Hugging Face Model)
-    # Bu adım, Google'ın kota hatasını (429) atlatır.
+    # Bu kısım, Google'ın kota hatasını (429) atlatır.
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("✅ Local Embedding Model Loaded.")
 
@@ -57,7 +57,8 @@ def setup_rag_pipeline():
     RAG_PROMPT_TEMPLATE = PromptTemplate(template=template, input_variables=["context", "question"])
 
     # 2.6 RAG Chain (RetrievalQA) Setup
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash") # En hızlı model kullanılıyor
+    # Cevap üretimi için en hızlı model kullanılıyor
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash") 
     
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
@@ -95,23 +96,26 @@ user_argument = st.text_area(
 if st.button("Analyze and Find Precedent", type="primary"):
     if user_argument:
         with st.spinner("Analyzing Your Legal Argument..."):
-            
-            # --- API ZAMAN AŞIMINI ATLATAN SİMÜLASYON ÇÖZÜMÜ ---
-            mock_title = "✅ ECHR Precedent Analysis (Simulated for API Time-Out Bypass)"
-            
-            # Simüle edilen cevap, projenin en güçlü test argümanına uygundur:
-            mock_response = """
-            **Legal Analysis (SIMULATED):** Your argument is strongly consistent with the jurisprudence concerning **Article 10** (Freedom of Expression).
-
-            The relevant precedent is **Ahmet Yıldırım v. Turkey**. The Court found that wholesale blocking constitutes a disproportionate and unjustified interference, as states are obligated to pursue less restrictive measures to address illegal online content. This simulation proves the RAG system's architecture is sound, utilizing the designated Prompt Engineering format.
-            """
-            
-            st.subheader(mock_title)
-            st.markdown(mock_response)
-            # --- SİMÜLASYON SONU ---
-            
+            try:
+                # GERÇEK API ÇAĞRISI BURAYA GİDİYOR
+                if qa_chain is None:
+                    st.error("RAG system is not initialized. Check logs for setup errors.")
+                else:
+                    result = qa_chain.invoke({"query": user_argument})
+                    
+                    st.subheader("✅ ECHR Precedent Analysis")
+                    st.markdown(result['result'])
+                
+            except Exception as e:
+                # API Zaman Aşımı (Timeout) hatasını yakalar.
+                st.error(f"An error occurred during response generation: {e}")
+                st.warning("Error suggests API Time-Out. Please re-run the app with a new API key.")
     else:
         st.warning("Please enter a legal argument to analyze.")
 
 st.markdown("---")
-st.caption("Project Name: Human-Rights-Casebot | Developer: [hilallygnn] | GAIH GenAI Bootcamp")
+st.caption("Project Name: Human-Rights-Casebot | Developer: [Your GitHub ID] | GAIH GenAI Bootcamp")
+
+
+
+            
