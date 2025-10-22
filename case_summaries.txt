@@ -1,16 +1,16 @@
---- CASE SUMMARY: S. and Marper v. UK (Article 8) ---
+ S. and Marper v. UK (Article 8) ---
 The key issue was the indiscriminate and indefinite retention of fingerprints and DNA samples, even in cases where the suspect was acquitted or discharged. The Court ruled that the wholesale retention of this biometric data constitutes a disproportionate interference with the right to respect for private life (Article 8). The violation stems from the policy's failure to strike a fair balance between public security interests and the applicant's right to privacy.
 
---- CASE SUMMARY: Ahmet Yıldırım v. Turkey (Article 10) ---
+Ahmet Yıldırım v. Turkey (Article 10) ---
 The case concerned the decision by domestic courts to block access to a specific website entirely, due to content posted by a single user on a sub-page (Google Sites). The Court found a violation of Article 10 (Freedom of Expression) because the measure was not strictly necessary and was disproportionate. It constituted a form of 'secondary censorship' and 'wholesale blocking' of an entire communication channel rather than targeting the source of the unlawful content.
 
---- CASE SUMMARY: Brambilla and Others v. Italy (Article 10) ---
+ Brambilla and Others v. Italy (Article 10) ---
 This case involved the criminal conviction of journalists for publishing excerpts of confidential police communications which they had received unlawfully. The Court emphasized that Article 10 protects journalistic freedom but also requires journalists to act in 'good faith' and respect journalistic ethics. The Court found no violation of Article 10, recognizing that the criminal conviction was necessary to prevent disorder and protect the rights of others, as the journalists had actively intercepted the communications to gain information.
 
---- CASE SUMMARY: Kaboğlu and Oran v. Turkey (Article 8) ---
+Kaboğlu and Oran v. Turkey (Article 8) ---
 The applicants, two academics, received serious threats and hate speech following a public debate, which they reported to the authorities. The Court examined the State's 'positive obligation' to protect the right to private life (Article 8) against threats from private individuals. The Court found a violation because the authorities failed to take effective steps to investigate the source of the threats or provide adequate protection, thus neglecting their positive duty to ensure a minimum level of protection for the applicants' lives and integrity.
 
---- CASE SUMMARY: Roman Zakharov v. Russia (Article 8) ---
+ Roman Zakharov v. Russia (Article 8) ---
 The case addressed the legality and scope of secret mass surveillance and interception of mobile phone communications by state authorities. The Court ruled that the legislative framework allowing secret, large-scale interception was inadequate. It found a violation of Article 8 because the law failed to provide sufficient safeguards against arbitrariness and abuse, particularly lacking clear rules on the duration, necessity, and oversight of the mass surveillance measures.
 
 
