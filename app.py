@@ -2,21 +2,21 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-# CORRECTED AND UPDATED IMPORTS
+# CORRECTED AND UPDATED IMPORTS (Fixes all ModuleNotFoundError issues)
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter 
 from langchain_community.vectorstores import FAISS                  
 from langchain.chains import RetrievalQA                            
 from langchain_core.prompts import PromptTemplate                   
-from langchain_community.embeddings import HuggingFaceEmbeddings # Local embedding model
+from langchain_community.embeddings import HuggingFaceEmbeddings # Local Embedding Model for Quota Bypass
 
-# 1. Load API Key (Reads from Replit/Colab Secrets)
+# 1. API Key Loading
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    st.error("GEMINI_API_KEY not found. Please check your Secrets.")
+    st.error("GEMINI_API_KEY not found. Please add it to your Replit Secrets.")
     st.stop()
 
 # 2. RAG Pipeline Setup
@@ -36,14 +36,14 @@ def setup_rag_pipeline():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200, length_function=len)
     texts = text_splitter.split_text(raw_text)
 
-    # 2.3 Embedding (QUOTA BYPASS: Using Local Model)
+    # 2.3 Embedding (QUOTA BYPASS: Local Hugging Face Model)
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("✅ Local Embedding Model Loaded.")
 
     # 2.4 Vector Database (FAISS) Creation
     db = FAISS.from_texts(texts, embeddings)
     
-    # 2.5 PROMPT ENGINEERING
+    # 2.5 PROMPT ENGINEERING (Defines the Legal Assistant Persona)
     template = """
     You are a Legal Argument Assistant specializing in ECHR precedents. Analyze the 'ARGUMENT' using ONLY the 'CONTEXT'. 
     Your response MUST: 1. Act as a legal professional. 2. Summarize the MOST RELEVANT precedent. 3. Mention the relevant ECHR Article (e.g., Article 8). 4. Keep it under 200 words.
@@ -55,8 +55,8 @@ def setup_rag_pipeline():
     RAG_PROMPT_TEMPLATE = PromptTemplate(template=template, input_variables=["context", "question"])
 
     # 2.6 RAG Chain (RetrievalQA) Setup
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
-
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash") # Using faster Flash model
+    
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
@@ -70,6 +70,7 @@ def setup_rag_pipeline():
 try:
     qa_chain = setup_rag_pipeline()
 except Exception as e:
+    # If this fails, it's a critical setup error (likely missing dependency)
     st.error(f"RAG Setup Error: {e}")
     qa_chain = None
 
@@ -94,15 +95,19 @@ if st.button("Analyze and Find Precedent", type="primary"):
         with st.spinner("Analyzing Your Legal Argument..."):
             try:
                 # RAG Chain Execution (Uses Gemini API for final answer)
-                result = qa_chain.invoke({"query": user_argument})
-                
-                st.subheader("✅ ECHR Precedent Analysis")
-                st.markdown(result['result'])
+                if qa_chain is None:
+                    st.error("RAG system is not initialized. Check logs for setup errors.")
+                else:
+                    result = qa_chain.invoke({"query": user_argument})
+                    
+                    st.subheader("✅ ECHR Precedent Analysis")
+                    st.markdown(result['result'])
                 
             except Exception as e:
-                st.error(f"An error occurred during response generation: {e}")
+                # This catches the final Gemini Generation Quota Error
+                st.error(f"An error occurred during response generation. (Possible API Quota Exceeded): {e}")
     else:
         st.warning("Please enter a legal argument to analyze.")
 
 st.markdown("---")
-st.caption("Project Name: Human-Rights-Casebot | Developer: [Your GitHub ID] | GAIH GenAI Bootcamp")
+st.caption("Project Name: Human-Rights-Casebot | Developer: [Hilallygnn] | GAIH GenAI Bootcamp")
