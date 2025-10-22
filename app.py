@@ -2,25 +2,24 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-# CORRECTED AND UPDATED IMPORTS (Fixes all ModuleNotFoundError issues)
+# CORRECTED AND UPDATED IMPORTS (LangChain'in en son yapısına uygun)
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter 
 from langchain_community.vectorstores import FAISS                  
 from langchain.chains import RetrievalQA                            
 from langchain_core.prompts import PromptTemplate                   
-from langchain_community.embeddings import HuggingFaceEmbeddings # Local Embedding Model for Quota Bypass
+from langchain_community.embeddings import HuggingFaceEmbeddings # Local Embedding Modeli (Kota Atlatma)
 
 # 1. API Key Loading
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    # Bu uyarı Streamlit Cloud'da görünür
     st.error("GEMINI_API_KEY not found. Please check your Secrets.")
     st.stop()
 
-# 2. RAG Pipeline Setup
+# 2. RAG Pipeline Kurulumu (Embedding için yerel model kullanılır)
 @st.cache_resource
 def setup_rag_pipeline():
     """Sets up the RAG chain, using a local model for embedding to avoid quota issues."""
@@ -37,8 +36,7 @@ def setup_rag_pipeline():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200, length_function=len)
     texts = text_splitter.split_text(raw_text)
 
-    # 2.3 Embedding (QUOTA BYPASS: Local Hugging Face Model)
-    # Bu kısım, Google'ın kota hatasını (429) atlatır.
+    # 2.3 Embedding (KOTA ATLATMA: Yerel Model Kullanımı)
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("✅ Local Embedding Model Loaded.")
 
@@ -73,7 +71,6 @@ def setup_rag_pipeline():
 try:
     qa_chain = setup_rag_pipeline()
 except Exception as e:
-    # Bu hata genellikle kütüphane eksikliğini yakalar.
     st.error(f"RAG Setup Error: {e}")
     qa_chain = None
 
@@ -94,28 +91,24 @@ user_argument = st.text_area(
 
 # Analysis button
 if st.button("Analyze and Find Precedent", type="primary"):
-    if user_argument:
+    if qa_chain is None:
+        # RAG kurulumu başarısızsa bu hata görünür.
+        st.error("❌ RAG System is not initialized. Please check deployment logs for setup errors.")
+    elif user_argument:
         with st.spinner("Analyzing Your Legal Argument..."):
             try:
-                # GERÇEK API ÇAĞRISI BURAYA GİDİYOR
-                if qa_chain is None:
-                    st.error("RAG system is not initialized. Check logs for setup errors.")
-                else:
-                    result = qa_chain.invoke({"query": user_argument})
-                    
-                    st.subheader("✅ ECHR Precedent Analysis")
-                    st.markdown(result['result'])
+                # GERÇEK GEMINI API ÇAĞRISI BURAYA GİDİYOR
+                result = qa_chain.invoke({"query": user_argument})
+                
+                st.subheader("✅ ECHR Precedent Analysis")
+                st.markdown(result['result'])
                 
             except Exception as e:
-                # API Zaman Aşımı (Timeout) hatasını yakalar.
-                st.error(f"An error occurred during response generation: {e}")
-                st.warning("Error suggests API Time-Out. Please re-run the app with a new API key.")
+                # Zaman Aşımı (Timeout) veya Kota Hatasını yakalar.
+                st.error(f"❌ An error occurred during response generation (Gemini API Error): {e}")
+                st.warning("Error suggests API Time-Out. Please check if the argument is too complex or try again.")
     else:
         st.warning("Please enter a legal argument to analyze.")
 
 st.markdown("---")
 st.caption("Project Name: Human-Rights-Casebot | Developer: [Your GitHub ID] | GAIH GenAI Bootcamp")
-
-
-
-            
