@@ -4,27 +4,30 @@ from dotenv import load_dotenv
 
 # CORRECTED AND UPDATED IMPORTS (Fixes all ModuleNotFoundError issues)
 from langchain_google_genai import ChatGoogleGenerativeAI
+# Note: GoogleGenerativeAIEmbeddings is imported but not used if HuggingFace is active
+from langchain_google_genai import GoogleGenerativeAIEmbeddings 
 from langchain_text_splitters import RecursiveCharacterTextSplitter 
 from langchain_community.vectorstores import FAISS                  
 from langchain.chains import RetrievalQA                            
 from langchain_core.prompts import PromptTemplate                   
 from langchain_community.embeddings import HuggingFaceEmbeddings # Local Embedding Model
 
-# 1. API Key Loading (Still needed for the LLM object setup)
+# 1. API Key Loading
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    st.error("GEMINI_API_KEY not found. Please check your Secrets.")
+    st.error("GEMINI_API_KEY not found. Please check your Streamlit Cloud Secrets.")
     st.stop()
 
-# 2. RAG Pipeline Setup (Uses local embedding)
+# 2. RAG Pipeline Setup
 @st.cache_resource
 def setup_rag_pipeline():
-    """Sets up the RAG chain components (embedding, vectorstore, retriever, LLM)."""
+    """Sets up the RAG chain, using a local model for embedding."""
     
-    # 2.1 Data Loading
+    # 2.1 Data Loading (Reads the 'case_summaries.txt' file)
     try:
+        # Uses the cleaned version of the case summaries
         with open("case_summaries.txt", "r", encoding="utf-8") as f:
             raw_text = f.read()
     except FileNotFoundError:
@@ -38,46 +41,65 @@ def setup_rag_pipeline():
         Failure by authorities to investigate credible threats against academics violates the State's positive obligation under Article 8 to protect private life.
         """
 
-    # 2.2 Text Splitter
+    # 2.2 Text Splitter (Chunking)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200, length_function=len)
     texts = text_splitter.split_text(raw_text)
 
-    # 2.3 Embedding (Local Model - No Quota Limit)
+    # 2.3 Embedding (QUOTA BYPASS: Using Local Hugging Face Model)
     try:
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-        print("✅ Local Embedding Model Loaded Successfully.")
+        print("✅ Local Embedding Model Loaded Successfully.") # Log message
     except Exception as e:
         st.error(f"Error loading local embedding model: {e}")
-        return None, None # Return None if embedding fails
+        return None # Return None if embedding fails
 
-    # 2.4 Vector Database (FAISS)
+    # 2.4 Vector Database (FAISS) Creation
     try:
         db = FAISS.from_texts(texts, embeddings)
-        print("✅ FAISS Vector Database Created.")
+        print("✅ FAISS Vector Database Created.") # Log message
     except Exception as e:
         st.error(f"Error creating FAISS database: {e}")
-        return None, None # Return None if DB creation fails
+        return None # Return None if DB creation fails
     
-    # 2.5 LLM Definition (Still needed for chain structure, even if not called directly in mock)
+    # 2.5 PROMPT ENGINEERING
+    template = """
+    You are a Legal Argument Assistant specializing in ECHR precedents. Analyze the 'ARGUMENT' using ONLY the 'CONTEXT'. 
+    Your response MUST: 1. Act as a legal professional. 2. Summarize the MOST RELEVANT precedent. 3. Mention the relevant ECHR Article (e.g., Article 8). 4. Keep it under 200 words.
+
+    CONTEXT: {context}
+    ARGUMENT: {question}
+    Legal Analysis and Precedent Summary:
+    """
+    RAG_PROMPT_TEMPLATE = PromptTemplate(template=template, input_variables=["context", "question"])
+
+    # 2.6 RAG Chain (RetrievalQA) Setup
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash") # Fastest model
-        print("✅ Gemini LLM Object Initialized.")
+        # Using the faster Gemini Flash model
+        llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash") 
+        print("✅ Gemini LLM Object Initialized.") # Log message
     except Exception as e:
-        st.error(f"Error initializing Gemini LLM (Check API Key?): {e}")
-        return None, None # Return None if LLM fails
+         st.error(f"Error initializing Gemini LLM (Check API Key?): {e}")
+         return None # Return None if LLM fails
 
-    # Return components needed for mocking logic (or real call if mock is removed)
-    return db, llm # Return db and llm separately
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=db.as_retriever(search_kwargs={"k": 2}),
+        chain_type_kwargs={"prompt": RAG_PROMPT_TEMPLATE}
+    )
+    
+    return qa_chain
 
-# Initialize RAG components
+# RAG Chain Initialization with error handling
+qa_chain = None # Initialize qa_chain as None
 try:
-    vectorstore_db, llm_model = setup_rag_pipeline()
-    if vectorstore_db is None or llm_model is None:
-        st.error("❌ Critical RAG components failed to initialize. Cannot proceed.")
-        st.stop() # Stop execution if setup fails
+    qa_chain = setup_rag_pipeline()
+    if qa_chain:
+         print("✅ RAG Pipeline setup successful.") # Log message
+    else:
+         st.error("❌ RAG Pipeline setup failed during component initialization.")
 except Exception as e:
-    st.error(f"RAG Setup Error during initialization: {e}")
-    st.stop()
+    st.error(f"Critical Error during RAG Setup: {e}")
 
 # 3. Streamlit Interface (Frontend)
 st.set_page_config(page_title="Human-Rights-Casebot", layout="wide") 
@@ -94,61 +116,27 @@ user_argument = st.text_area(
     placeholder="Example: 'Does the continued retention of biometric data...?'"
 )
 
-# Analysis button with Mocking Logic
+# Analysis button (Using the REAL API call)
 if st.button("Analyze and Find Precedent", type="primary"):
-    if not user_argument:
+    if qa_chain is None:
+        st.error("❌ RAG System is not initialized. Cannot perform analysis. Check logs.")
+    elif not user_argument:
         st.warning("Please enter a legal argument to analyze.")
-    elif vectorstore_db is None: # Check if RAG setup was successful
-         st.error("❌ RAG System is not initialized. Cannot perform analysis.")
     else:
         with st.spinner("Analyzing Your Legal Argument..."):
-            
-            # --- PROFESSIONAL MOCKING LOGIC START ---
-            
-            arg_lower = user_argument.lower()
-            mock_title = "✅ ECHR Precedent Analysis" # Removed "(Simulated...)"
-            
-            # Simulate retrieval based on keywords - This mimics the RAG 'Retrieval' step
-            retrieved_context = "" # Placeholder for context similarity
-            
-            # 1. Check for Biometric Data / Acquittal keywords
-            if "fingerprints" in arg_lower or "dna" in arg_lower or "acquitted" in arg_lower or "biometric" in arg_lower:
-                retrieved_context = "S. and Marper v. UK"
-                mock_response = """
-                Based on the provided argument concerning the retention of biometric data, the analysis indicates a potential conflict with **Article 8** (Right to Private Life). 
+            try:
+                # --- REAL GEMINI API CALL ---
+                result = qa_chain.invoke({"query": user_argument})
                 
-                The primary relevant precedent is **S. and Marper v. UK**. In this case, the Court found that the indefinite and blanket retention of fingerprints and DNA from individuals not convicted of an offense constituted a **disproportionate interference** with their private life, lacking sufficient justification or safeguards.
-                """
+                st.subheader("✅ ECHR Precedent Analysis")
+                st.markdown(result['result'])
+                # --- END REAL API CALL ---
                 
-            # 2. Check for Wholesale Blocking / Censorship keywords
-            elif "blocking" in arg_lower or "social media" in arg_lower or "censor" in arg_lower or "platform" in arg_lower:
-                retrieved_context = "Ahmet Yıldırım v. Turkey"
-                mock_response = """
-                The argument regarding the complete blocking of an online platform aligns with jurisprudence concerning **Article 10** (Freedom of Expression).
-                
-                The key precedent is **Ahmet Yıldırım v. Turkey**, where the Court ruled that **wholesale blocking** of an entire hosting service (like Google Sites) due to content on a single site was a **disproportionate** measure, violating the right to receive and impart information. Less restrictive measures should have been considered.
-                """
+            except Exception as e:
+                # Catch Time-Out or Quota errors here
+                st.error(f"❌ An error occurred during response generation: {e}")
+                st.warning("This might be due to API Time-Out (504 Error) or Rate Limits. Check the app logs ('Manage app') for details. Please try again later.")
 
-            # 3. Check for Threats / State Protection keywords
-            elif "threats" in arg_lower or "protection" in arg_lower or "obligation" in arg_lower or "hate speech" in arg_lower:
-                retrieved_context = "Kaboğlu and Oran v. Turkey"
-                mock_response = """
-                The argument concerns the State's **Positive Obligation** under **Article 8** (Right to Private Life) to protect individuals from credible threats.
-                
-                The relevant precedent is **Kaboğlu and Oran v. Turkey**. The Court found a violation where authorities failed to take effective investigative or protective measures against serious threats directed at the applicants following their public expression, thereby neglecting their duty under Article 8.
-                """
-            
-            # 4. Default response if no specific keywords match
-            else:
-                mock_title = "⚠️ Preliminary Analysis"
-                mock_response = "The system has processed the argument. While specific keyword matching for a direct precedent simulation was inconclusive, the RAG architecture successfully prepared the context for generation. For a live API response, please contact the developer."
-
-            # Display the simulated output
-            st.subheader(mock_title)
-            st.markdown(mock_response)
-            
-            # --- PROFESSIONAL MOCKING LOGIC END ---
-            
 st.markdown("---")
-# Update with your actual GitHub ID
 st.caption("Project Name: Human-Rights-Casebot | Developer: [hilallygnn] | GAIH GenAI Bootcamp")
+
