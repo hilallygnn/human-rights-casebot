@@ -55,9 +55,8 @@ def setup_rag_pipeline():
     RAG_PROMPT_TEMPLATE = PromptTemplate(template=template, input_variables=["context", "question"])
 
     # 2.6 RAG Chain (RetrievalQA) Setup
-   llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
+    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash")
 
-    
     qa_chain = RetrievalQA.from_chain_type(
         llm=llm,
         chain_type="stuff",
