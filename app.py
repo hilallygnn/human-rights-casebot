@@ -127,4 +127,4 @@ if st.button("Analyze and Find Precedent", type="primary"):
         st.warning("Please enter a legal argument to analyze.")
 
 st.markdown("---")
-st.caption("Project Name: Human-Rights-Casebot | Developer: [Your GitHub ID] | GAIH GenAI Bootcamp")
+st.caption("Project Name: Human-Rights-Casebot | Developer: [hilallygnn ID] | GAIH GenAI Bootcamp")
