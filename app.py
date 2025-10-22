@@ -2,16 +2,16 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 
-# DÜZELTİLMİŞ VE GÜNCELLENMİŞ IMPORT'LAR
+# CORRECTED AND UPDATED IMPORTS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter 
 from langchain_community.vectorstores import FAISS                  
 from langchain.chains import RetrievalQA                            
 from langchain_core.prompts import PromptTemplate                   
-from langchain_community.embeddings import HuggingFaceEmbeddings # Yerel embedding modeli
+from langchain_community.embeddings import HuggingFaceEmbeddings # Local embedding model
 
-# 1. API Anahtarını Yükle (Replit/Colab Secrets'tan okur)
+# 1. Load API Key (Reads from Replit/Colab Secrets)
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -19,7 +19,7 @@ if not GEMINI_API_KEY:
     st.error("GEMINI_API_KEY not found. Please check your Secrets.")
     st.stop()
 
-# 2. RAG Pipeline Kurulumu
+# 2. RAG Pipeline Setup
 @st.cache_resource
 def setup_rag_pipeline():
     """Sets up the RAG chain, using a local model for embedding to avoid quota issues."""
@@ -36,7 +36,7 @@ def setup_rag_pipeline():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200, length_function=len)
     texts = text_splitter.split_text(raw_text)
 
-    # 2.3 Embedding (KOTA ATLATMA: Yerel Model Kullanımı)
+    # 2.3 Embedding (QUOTA BYPASS: Using Local Model)
     embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
     print("✅ Local Embedding Model Loaded.")
 
@@ -66,14 +66,14 @@ def setup_rag_pipeline():
     
     return qa_chain
 
-# RAG Zincirini Başlat
+# RAG Chain Initialization
 try:
     qa_chain = setup_rag_pipeline()
 except Exception as e:
-    st.error(f"RAG Kurulum Hatası: {e}")
+    st.error(f"RAG Setup Error: {e}")
     qa_chain = None
 
-# 3. Streamlit Arayüzü
+# 3. Streamlit Interface (Frontend)
 st.set_page_config(page_title="Human-Rights-Casebot", layout="wide") 
 
 st.title("⚖️ Human-Rights-Casebot") 
@@ -93,7 +93,7 @@ if st.button("Analyze and Find Precedent", type="primary"):
     if user_argument:
         with st.spinner("Analyzing Your Legal Argument..."):
             try:
-                # RAG Zincirini Çalıştır (Gemini API'yi burada kullanır)
+                # RAG Chain Execution (Uses Gemini API for final answer)
                 result = qa_chain.invoke({"query": user_argument})
                 
                 st.subheader("✅ ECHR Precedent Analysis")
