@@ -104,10 +104,11 @@ except Exception as e:
 # 3. Streamlit Interface (Frontend)
 st.set_page_config(page_title="Human-Rights-Casebot", layout="wide") 
 
-st.title("⚖️ Human-Rights-Casebot") 
+st.title("Human Rights Casebot") 
 st.markdown("---")
-st.subheader("Paste Your Legal Argument Here")
-st.info("This assistant analyzes your argument and retrieves relevant ECHR precedents.")
+st.subheader("Curious About a Precedent? Ask Your AI Assistant")
+st.info("To get started, enter a legal argument below. I'll search my knowledge base for the ECHR case that best matches your theory.")
+
 
 # User input
 user_argument = st.text_area(
